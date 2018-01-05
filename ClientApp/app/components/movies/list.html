@@ -1,0 +1,31 @@
+﻿<template>
+    <table if.bind="movies" class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Year</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr repeat.for="movie of movies">
+                <td>${movie.title}</td>
+                <td>${movie.releaseYear}</td>
+                <td>
+                    <a route-href="route:details;
+                                   params.bind: {id:movie.id}" class="btn btn-default">
+                        Details
+                    </a>
+                </td>
+                <td>
+                    <a route-href="route:edit;
+                                   params.bind: {id:movie.id}" class="btn btn-default">
+                        Edit
+                    </a>
+                    <a route-href="route:create" class="btn btn-default">
+                        Add
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</template>
