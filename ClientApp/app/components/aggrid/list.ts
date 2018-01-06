@@ -10,6 +10,8 @@ export class List {
     private columnApi: ColumnApi;
     private api: GridApi;
 
+    baseUrl = 'api/SampleData/Athletes';
+
     constructor(http: HttpClient) {
         this.http = http;
         this.http.configure(config => {
@@ -36,31 +38,32 @@ export class List {
     public onReady(event: GridReadyEvent) {
         this.api = event.api;
         this.columnApi = event.columnApi;
-        this.http.fetch("https://raw.githubusercontent.com/ag-grid/ag-grid-docs/master/src/olympicWinners.json",
-            {
-                method: 'get'
-            }).then(result => result.json() as Promise<DataItem[]>).then(
-            data => {
-                this.loadData(data);
-            });
+        this.loadData();
     }
 
-    private loadData(data: DataItem[]) {
-        console.log("total data: " + data.length);
-        for (let i = 0; i < data.length; i++) {
-            data[i].id = i;
-        }
+    private loadData() {
         var dataSource = {
             rowCount: 0,
             getRows: (params: IGetRowsParams) => {
                 console.log("asking for " + params.startRow + " to " + params.endRow);
-                var sortedData = this.sortData(params.sortModel, data);
-                var rowsThisPage = sortedData.slice(params.startRow, params.endRow);
-                var lastRow = -1;
-                if (sortedData.length <= params.endRow) {
-                    lastRow = sortedData.length;
-                }
-                params.successCallback(rowsThisPage, lastRow);
+                const fitlerData = { starRow: params.startRow, endRow: params.endRow };
+
+                this.http.fetch(
+                    this.baseUrl,
+                    {
+                        method: 'post',
+                        body: json(fitlerData)
+                    })
+                    .then(result => result.json() as Promise<ResultData>)
+                    .then(data => {
+                        var sortedData = this.sortData(params.sortModel, data.items);
+                        var rowsThisPage = sortedData;//.slice(params.startRow, params.endRow);
+                        var lastRow = -1;
+                        if (data.totalCount <= params.endRow) {
+                            lastRow = data.totalCount;
+                        }
+                        params.successCallback(rowsThisPage, lastRow);
+                    });
             }
         } as IDatasource;
 
@@ -93,4 +96,9 @@ export class List {
         });
         return resultOfSort;
     }
-} 
+}
+
+export class ResultData {
+    totalCount: number;
+    items: DataItem[];
+}

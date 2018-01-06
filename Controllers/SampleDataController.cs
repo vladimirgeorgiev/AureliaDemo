@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace aureliadotnetcore.Controllers
 {
     [Route("api/[controller]")]
-    public class SampleDataController : Controller
+    public partial class SampleDataController : Controller
     {
         MoviesData _db;
 
@@ -37,7 +37,8 @@ namespace aureliadotnetcore.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<MovieItem> Movies() {
+        public IEnumerable<MovieItem> Movies()
+        {
 
             //Thread.Sleep(1000);
             return _db.Movies.ToList();
@@ -64,32 +65,33 @@ namespace aureliadotnetcore.Controllers
                     _db.Movies.Add(updatedMovie).State = EntityState.Added;
                     _db.SaveChanges();
                 }
-                
+
                 return updatedMovie;
             }
             return null;
         }
-     
-        public class WeatherForecast
-        {
-            public string DateFormatted { get; set; }
-            public int TemperatureC { get; set; }
-            public string Summary { get; set; }
 
-            public int TemperatureF
+        [HttpPost("[action]")]
+        public ResultData Athletes([FromBody]Filterdata filterdata)
+        {
+
+            return new ResultData
             {
-                get
-                {
-                    return 32 + (int)(this.TemperatureC / 0.5556);
-                }
-            }
+                Items = _db.Athletes.Take(filterdata.EndRow).Skip(filterdata.StarRow).ToList(),
+                TotalCount = _db.Athletes.Count()
+            };
         }
+    }
 
-        public class MovieItem
-        {
-            public string Title { get; set; }
-            public int ReleaseYear { get; set; }
-            public int Id { get; set; }
-        }
+    public class Filterdata
+    {
+        public int StarRow { get; set; }
+        public int EndRow { get; set; }
+    }
+
+    public class ResultData
+    {
+        public int TotalCount { get; set; }
+        public IEnumerable<AthleteItem> Items { get; set; }
     }
 }

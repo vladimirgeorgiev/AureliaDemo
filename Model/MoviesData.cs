@@ -10,25 +10,16 @@ namespace aureliadotnetcore.Model
 {
     public class MoviesData: DbContext
     {
-        public MoviesData()
+        public MoviesData(DbContextOptions<MoviesData> options):base(options)
         {
 
         }
-
-        public MoviesData(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         public DbSet<MovieItem> Movies { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DbSet<AthleteItem> Athletes { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var connectionString = "Server=(local); Database = movies; integrated security = True";
-            optionsBuilder.UseSqlServer(connectionString);
-            base.OnConfiguring(optionsBuilder);
+            modelBuilder.Entity<MovieItem>().ToTable("Movie");
+            modelBuilder.Entity<AthleteItem>().ToTable("Athlete");
         }
-
-        IConfiguration _configuration;
     }
 }
