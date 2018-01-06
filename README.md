@@ -1,4 +1,4 @@
-# AureliaDemo
+# Aurelia ASP.NET Core 2.0 Entity Framework Core and ag-grid Demo
 Aurelia CRUD with ASP.NET Core 2 and aurelia aggrid 
 
 Uses
