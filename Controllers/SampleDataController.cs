@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using aureliadotnetcore.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace aureliadotnetcore.Controllers
 {
@@ -72,21 +73,32 @@ namespace aureliadotnetcore.Controllers
         }
 
         [HttpPost("[action]")]
-        public ResultData Athletes([FromBody]Filterdata filterdata)
+        public ResultData Athletes([FromBody]SortFilterdata filterdata)
         {
-
+            var list = new List<AthleteItem>();
+            if (!String.IsNullOrEmpty(filterdata.ColId))
+            {
+                var sort = filterdata.Sort.ToLower() == "desc" ? "desc" : "asc";
+                list = _db.Athletes.OrderBy(filterdata.ColId + " " + sort).Take(filterdata.EndRow).Skip(filterdata.StarRow).ToList();
+            }
+            else
+            {
+                list = _db.Athletes.Take(filterdata.EndRow).Skip(filterdata.StarRow).ToList();
+            }
             return new ResultData
             {
-                Items = _db.Athletes.Take(filterdata.EndRow).Skip(filterdata.StarRow).ToList(),
+                Items = list,
                 TotalCount = _db.Athletes.Count()
             };
         }
     }
 
-    public class Filterdata
+    public class SortFilterdata
     {
         public int StarRow { get; set; }
         public int EndRow { get; set; }
+        public string ColId { get; set; }
+        public string Sort { get; set; }
     }
 
     public class ResultData

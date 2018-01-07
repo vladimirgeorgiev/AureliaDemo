@@ -46,7 +46,12 @@ export class List {
             rowCount: 0,
             getRows: (params: IGetRowsParams) => {
                 console.log("asking for " + params.startRow + " to " + params.endRow);
-                const fitlerData = { starRow: params.startRow, endRow: params.endRow };
+                const fitlerData = {
+                    starRow: params.startRow,
+                    endRow: params.endRow,
+                    colid: params.sortModel.length == 0 ? null : params.sortModel[0].colId,
+                    sort: params.sortModel.length == 0 ? null : params.sortModel[0].sort
+                };
 
                 this.http.fetch(
                     this.baseUrl,
@@ -56,8 +61,7 @@ export class List {
                     })
                     .then(result => result.json() as Promise<ResultData>)
                     .then(data => {
-                        var sortedData = this.sortData(params.sortModel, data.items);
-                        var rowsThisPage = sortedData;//.slice(params.startRow, params.endRow);
+                        var rowsThisPage = data.items;
                         var lastRow = -1;
                         if (data.totalCount <= params.endRow) {
                             lastRow = data.totalCount;
