@@ -73,33 +73,33 @@ export class List {
 
         this.api.setDatasource(dataSource);
     }
-
-    private sortData(sortModel: any, data: DataItem[]) {
-        var sortPresent = sortModel && sortModel.length > 0;
-        if (!sortPresent) {
-            return data;
-        }
-        var resultOfSort = data.slice();
-        console.log(resultOfSort);
-        resultOfSort.sort(function (a: any, b: any) {
-            for (var k = 0; k < sortModel.length; k++) {
-                var sortColModel = sortModel[k];
-                var valueA = a[sortColModel.colId];
-                var valueB = b[sortColModel.colId];
-                if (valueA == valueB) {
-                    continue;
-                }
-                var sortDirection = sortColModel.sort === "asc" ? 1 : -1;
-                if (valueA > valueB) {
-                    return sortDirection;
-                } else {
-                    return sortDirection * -1;
-                }
-            }
-            return 0;
-        });
-        return resultOfSort;
-    }
+    ////  Not used
+    //private sortData(sortModel: any, data: DataItem[]) {
+    //    var sortPresent = sortModel && sortModel.length > 0;
+    //    if (!sortPresent) {
+    //        return data;
+    //    }
+    //    var resultOfSort = data.slice();
+    //    console.log(resultOfSort);
+    //    resultOfSort.sort(function (a: any, b: any) {
+    //        for (var k = 0; k < sortModel.length; k++) {
+    //            var sortColModel = sortModel[k];
+    //            var valueA = a[sortColModel.colId];
+    //            var valueB = b[sortColModel.colId];
+    //            if (valueA == valueB) {
+    //                continue;
+    //            }
+    //            var sortDirection = sortColModel.sort === "asc" ? 1 : -1;
+    //            if (valueA > valueB) {
+    //                return sortDirection;
+    //            } else {
+    //                return sortDirection * -1;
+    //            }
+    //        }
+    //        return 0;
+    //    });
+    //    return resultOfSort;
+    //}
 }
 
 export class ResultData {
