@@ -13,8 +13,9 @@ export function configure(aurelia: Aurelia) {
     if (IS_DEV_BUILD) {
         aurelia.use.
             plugin(PLATFORM.moduleName('aurelia-validation'))
-                .plugin(PLATFORM.moduleName('ag-grid-aurelia'))
-                .developmentLogging();
+            .plugin(PLATFORM.moduleName('ag-grid-aurelia'))
+            .plugin(PLATFORM.moduleName('aurelia-dialog'))
+            .developmentLogging();
     }
 
     new HttpClient().configure(config => {

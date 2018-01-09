@@ -30,6 +30,7 @@
   "dependencies": {
     "ag-grid": "^15.0.0",
     "ag-grid-aurelia": "^15.0.0",
+    "aurelia-dialog": "^1.0.0-rc.2.0.0",
     "aurelia-validation": "^1.1.2",
     "font-awesome": "^4.7.0",
     "font-awesome-webpack2": "0.0.6",

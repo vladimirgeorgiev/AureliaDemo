@@ -1,12 +1,12 @@
 ﻿import { autoinject } from 'aurelia-framework';
-import { GridOptions, GridReadyEvent, ColumnApi, GridApi, IDatasource, IGetRowsParams } from "ag-grid";
+import { GridOptions, GridReadyEvent, ColumnApi, GridApi, IDatasource, IGetRowsParams, CellEditingStoppedEvent } from "ag-grid";
 import { HttpClient, json } from 'aurelia-fetch-client';
 import { DataItem } from './dataItem';
 
 @autoinject
 export class List {
     private gridOptions: GridOptions;
-    private http: HttpClient;
+    public http: HttpClient;
     private columnApi: ColumnApi;
     private api: GridApi;
 
@@ -33,6 +33,18 @@ export class List {
         this.gridOptions.getRowNodeId = function (item) {
             return item.id;
         };
+        this.gridOptions.onCellValueChanged = (event) => {
+            if (event != undefined && event.data != undefined) {
+                console.log(event);
+                //  update to server
+                this.http.fetch(
+                    this.baseUrl,
+                    {
+                        method: 'put',
+                        body: json(event.data)
+                    });
+            }
+        }
     }
 
     public onReady(event: GridReadyEvent) {

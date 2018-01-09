@@ -91,6 +91,14 @@ namespace aureliadotnetcore.Controllers
                 TotalCount = _db.Athletes.Count()
             };
         }
+
+        [HttpPut("[action]")]
+        public AthleteItem Athletes([FromBody]AthleteItem athlete)
+        {
+            _db.Athletes.Attach(athlete).State = EntityState.Modified;
+            _db.SaveChangesAsync();
+            return athlete;
+        }
     }
 
     public class SortFilterdata
