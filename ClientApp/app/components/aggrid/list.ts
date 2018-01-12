@@ -2,6 +2,7 @@
 import { GridOptions, GridReadyEvent, ColumnApi, GridApi, IDatasource, IGetRowsParams, CellEditingStoppedEvent } from "ag-grid";
 import { HttpClient, json } from 'aurelia-fetch-client';
 import { DataItem } from './dataItem';
+import { PartialMatchFilter } from './partialmatchfilter';
 
 @autoinject
 export class List {
@@ -9,10 +10,11 @@ export class List {
     public http: HttpClient;
     private columnApi: ColumnApi;
     private api: GridApi;
-
+  
     baseUrl = 'api/SampleData/Athletes';
 
     constructor(http: HttpClient) {
+     
         this.http = http;
         this.http.configure(config => {
             config.useStandardConfiguration();
@@ -47,6 +49,10 @@ export class List {
         }
     }
 
+    public getPartialMatchFilter() {
+        return PartialMatchFilter;
+    }
+
     public onReady(event: GridReadyEvent) {
         this.api = event.api;
         this.columnApi = event.columnApi;
@@ -57,12 +63,28 @@ export class List {
         var dataSource = {
             rowCount: 0,
             getRows: (params: IGetRowsParams) => {
+
                 console.log("asking for " + params.startRow + " to " + params.endRow);
+                console.log("filter model: " + JSON.stringify(params.filterModel));
+
+                const propertyNames = Object.getOwnPropertyNames(params.filterModel);
+                const filterItems = [];
+                for (let i = 0; i < propertyNames.length; i++) {
+                    const current = params.filterModel[propertyNames[i]];
+                    filterItems.push({
+                        filter: current.filter,
+                        filterType: current.filterType,
+                        type: current.type,
+                        filterField: propertyNames[i]
+                    });
+                }
+                
                 const fitlerData = {
                     starRow: params.startRow,
                     endRow: params.endRow,
                     colid: params.sortModel.length == 0 ? null : params.sortModel[0].colId,
-                    sort: params.sortModel.length == 0 ? null : params.sortModel[0].sort
+                    sort: params.sortModel.length == 0 ? null : params.sortModel[0].sort,
+                    filters: filterItems
                 };
 
                 this.http.fetch(

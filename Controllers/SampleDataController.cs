@@ -107,8 +107,18 @@ namespace aureliadotnetcore.Controllers
         public int EndRow { get; set; }
         public string ColId { get; set; }
         public string Sort { get; set; }
+
+        public List<FilterData> Filters { get; set; }
     }
 
+    public class FilterData
+    {
+        public string filter { get; set; }
+        public string filterType { get; set; }
+        public string type { get; set; }
+        public string filterField { get; set; }
+    }
+        
     public class ResultData
     {
         public int TotalCount { get; set; }

@@ -11,6 +11,7 @@
     <None Remove="ClientApp\app\components\about\about.ts" />
     <None Remove="ClientApp\app\components\aggrid\dataItem.ts" />
     <None Remove="ClientApp\app\components\aggrid\list.ts" />
+    <None Remove="ClientApp\app\components\aggrid\partialmatchfilter.ts" />
     <None Remove="ClientApp\app\components\movies\details.ts" />
     <None Remove="ClientApp\app\components\movies\edit.ts" />
     <None Remove="ClientApp\app\components\movies\movieData.ts" />
@@ -35,6 +36,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\about\about.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\aggrid\dataItem.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\aggrid\list.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\aggrid\partialmatchfilter.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\movies\details.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\movies\edit.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\movies\movieData.ts" />
