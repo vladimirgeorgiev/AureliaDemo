@@ -10,7 +10,7 @@ export class List {
     public http: HttpClient;
     private columnApi: ColumnApi;
     private api: GridApi;
-  
+    private columnsDefs: any[];
     baseUrl = 'api/SampleData/Athletes';
 
     constructor(http: HttpClient) {
@@ -25,8 +25,38 @@ export class List {
             });
         });
         this.gridOptions = <GridOptions>{};
-        this.gridOptions.enableFilter = true;
+        this.columnsDefs= [
+            {
+                headerName: "Athlete",
+                field: "athlete",
+                width: 90,
+                filterParams: {
+                    filterOptions: ["equals", "lessThan", "greaterThan"],
+                    newRowsAction: "keep"
+                }
+            },
+            {
+                headerName: "country",
+                field: "country",
+                width: 90,
+                filter: 'agTextColumnFilter',
+                filterParams: {
+                    newRowsAction: "keep"
+                }
+            },
+            {
+                headerName: "sport",
+                field: "sport",
+                width: 90,
+                filter: PartialMatchFilter,
+                filterParams: {
+                    newRowsAction: "keep"
+                }
+            }   
+        ];
+        this.gridOptions.columnDefs = this.columnsDefs;
         this.gridOptions.enableServerSideSorting = true;
+        this.gridOptions.enableServerSideFilter = true;
         this.gridOptions.rowModelType = 'infinite';
         this.gridOptions.paginationPageSize = 10;
         this.gridOptions.infiniteInitialRowCount = 1;
@@ -107,33 +137,6 @@ export class List {
 
         this.api.setDatasource(dataSource);
     }
-    ////  Not used
-    //private sortData(sortModel: any, data: DataItem[]) {
-    //    var sortPresent = sortModel && sortModel.length > 0;
-    //    if (!sortPresent) {
-    //        return data;
-    //    }
-    //    var resultOfSort = data.slice();
-    //    console.log(resultOfSort);
-    //    resultOfSort.sort(function (a: any, b: any) {
-    //        for (var k = 0; k < sortModel.length; k++) {
-    //            var sortColModel = sortModel[k];
-    //            var valueA = a[sortColModel.colId];
-    //            var valueB = b[sortColModel.colId];
-    //            if (valueA == valueB) {
-    //                continue;
-    //            }
-    //            var sortDirection = sortColModel.sort === "asc" ? 1 : -1;
-    //            if (valueA > valueB) {
-    //                return sortDirection;
-    //            } else {
-    //                return sortDirection * -1;
-    //            }
-    //        }
-    //        return 0;
-    //    });
-    //    return resultOfSort;
-    //}
 }
 
 export class ResultData {

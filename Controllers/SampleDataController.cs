@@ -75,21 +75,86 @@ namespace aureliadotnetcore.Controllers
         [HttpPost("[action]")]
         public ResultData Athletes([FromBody]SortFilterdata filterdata)
         {
-            var list = new List<AthleteItem>();
+            var list = _db.Athletes.AsQueryable();
+
+            if (filterdata.Filters.Count > 0)
+            {
+                list =  FilterInner(filterdata.Filters);
+            }
+
+
             if (!String.IsNullOrEmpty(filterdata.ColId))
             {
                 var sort = filterdata.Sort.ToLower() == "desc" ? "desc" : "asc";
-                list = _db.Athletes.OrderBy(filterdata.ColId + " " + sort).Take(filterdata.EndRow).Skip(filterdata.StarRow).ToList();
+                list = list.OrderBy(filterdata.ColId + " " + sort).Take(filterdata.EndRow).Skip(filterdata.StarRow).AsQueryable();
             }
             else
             {
-                list = _db.Athletes.Take(filterdata.EndRow).Skip(filterdata.StarRow).ToList();
+                list = list.Take(filterdata.EndRow).Skip(filterdata.StarRow).AsQueryable();
             }
+
             return new ResultData
             {
-                Items = list,
+                Items = list.ToList(),
                 TotalCount = _db.Athletes.Count()
             };
+        }
+
+        private IQueryable<AthleteItem> FilterInner(List<FilterData> filters)
+        {
+            string expressionFiler = "";
+            int cntFilter = 0;
+            foreach (var filter in filters)
+            {
+                expressionFiler += GetComparer(filter.type, filter.filterField, filter.filter);
+                if (cntFilter != 0 && cntFilter != filters.Count-1)
+                {
+                    expressionFiler += " AND ";
+                }
+                cntFilter++;
+            }
+
+            return _db.Athletes.Where(expressionFiler).AsQueryable();
+            
+        }
+
+        private string GetComparer(string filterType,string field, string value)
+        {
+            string comparer = "";
+            switch (filterType)
+            {
+                case "equals":
+                    comparer = $"{field} = '{value}'";
+                    break;
+                case "notEqual":
+                    comparer = $"{field} != '{value}'";
+                    break;
+                case "notEquals":
+                    comparer = $"{field} != '{value}'";
+                    break;
+                case "lessThan":
+                    comparer = $"{field} < '{value}'";
+                    break;
+                case "lessThanOrEqual":
+                    comparer = $"{field} <= '{value}'";
+                    break;
+                case "greaterThan":
+                    comparer = $"{field} > '{value}'";
+                    break;
+                case "greaterThanOrEqual":
+					comparer = $"{field} >= '{value}'";
+                    break;
+                case "contains":
+                    comparer = $"{field}.Contains(\"{value}\")";
+                    break;
+                case "startsWith":
+                    comparer = $"{field}.StartsWith(\"{value}\")";
+                    break;
+                case "endsWith":
+                    comparer = $"{field}.EndsWith(\"{value}\")";
+                    break;
+            }
+            return comparer;
         }
 
         [HttpPut("[action]")]
